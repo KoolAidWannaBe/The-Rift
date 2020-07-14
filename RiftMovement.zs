@@ -2,7 +2,6 @@
 
 DEFINE TAU = 360;
 
-/*
 ffc script CircularMotion
 {
     void run(int radius, int speed, int angle, int radius2, int angle2)
@@ -30,7 +29,6 @@ ffc script CircularMotion
         }
     }
 }
-*/
 
 ffc script CircMove
 {

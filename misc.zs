@@ -119,7 +119,7 @@ bool getForceUnfreeze(int q) {return forceActive[q];}
 
 //end
 
-void TotalNoAction()//start
+void TotalNoAction()//start 
 {
 	for(int q = 0; q < CB_MAX; ++q)
 	{
@@ -127,11 +127,11 @@ void TotalNoAction()//start
 		Input->Press[q] = false;
 	}
 }//end
-void WaitTotalNoAction()//start
+void WaitTotalNoAction()//start 
 {
 	WaitTotalNoAction(1);
 }//end
-void WaitTotalNoAction(int frames)//start
+void WaitTotalNoAction(int frames)//start 
 {
 	for(int j = 0; j < frames; ++j)
 	{
@@ -140,298 +140,11 @@ void WaitTotalNoAction(int frames)//start
 	}
 }//end
 
-
-void getFontName(char32 buf, int font) //start
-{
-	switch(font)
-	{
-		case FONT_Z1:
-			strcpy(buf, "Zelda NES");
-			break;
-			
-		case FONT_Z3:
-			strcpy(buf, "Link to the Past");
-			break;
-			
-		case FONT_Z3SMALL:
-			strcpy(buf, "LttP Small");
-			break;
-			
-		case FONT_DEF:
-			strcpy(buf, "Allegro Default");
-			break;
-			
-		case FONT_L:
-			strcpy(buf, "GUI Font Bold");
-			break;
-			
-		case FONT_L2:
-			strcpy(buf, "GUI Font");
-			break;
-			
-		case FONT_P:
-			strcpy(buf, "GUI Font Narrow");
-			break;
-			
-		case FONT_MATRIX:
-			strcpy(buf, "Zelda NES (Matrix)");
-			break;
-			
-		case FONT_ZTIME:
-			strcpy(buf, "BS Time (Incomplete)");
-			break;
-			
-		case FONT_S:
-			strcpy(buf, "Small");
-			break;
-			
-		case FONT_S2:
-			strcpy(buf, "Small 2");
-			break;
-			
-		case FONT_SP:
-			strcpy(buf, "S. Proportional");
-			break;
-			
-		case FONT_SUBSCREEN1:
-			strcpy(buf, "SS 1 (Numerals)");
-			break;
-			
-		case FONT_SUBSCREEN2:
-			strcpy(buf, "SS 2 (Incomplete)");
-			break;
-			
-		case FONT_SUBSCREEN3:
-			strcpy(buf, "SS 3");
-			break;
-			
-		case FONT_SUBSCREEN4:
-			strcpy(buf, "SS 4 (Numerals)");
-			break;
-			
-		case FONT_LA:
-			strcpy(buf, "Link's Awakening");
-			break;
-			
-		case FONT_GORON:
-			strcpy(buf, "Goron");
-			break;
-			
-		case FONT_ZORAN:
-			strcpy(buf, "Zoran");
-			break;
-			
-		case FONT_HYLIAN1:
-			strcpy(buf, "Hylian 1");
-			break;
-			
-		case FONT_HYLIAN2:
-			strcpy(buf, "Hylian 2");
-			break;
-			
-		case FONT_HYLIAN3:
-			strcpy(buf, "Hylian 3");
-			break;
-			
-		case FONT_HYLIAN4:
-			strcpy(buf, "Hylian 4");
-			break;
-			
-		case FONT_GBORACLE:
-			strcpy(buf, "Oracle");
-			break;
-			
-		case FONT_GBORACLEP:
-			strcpy(buf, "Oracle Proportional");
-			break;
-			
-		case FONT_DSPHANTOM:
-			strcpy(buf, "Phantom");
-			break;
-			
-		case FONT_DSPHANTOMP:
-			strcpy(buf, "Phantom Proportional");
-			break;
-			
-		case FONT_ATARI800:
-			strcpy(buf, "Atari 800");
-			break;
-			
-		case FONT_ACORN:
-			strcpy(buf, "Acorn");
-			break;
-			
-		case FONT_ADOS:
-			strcpy(buf, "ADOS");
-			break;
-			
-		case FONT_ALLEGRO:
-			strcpy(buf, "Allegro");
-			break;
-			
-		case FONT_APPLE2:
-			strcpy(buf, "Apple II");
-			break;
-			
-		case FONT_APPLE2_80COL:
-			strcpy(buf, "Apple II 80 Column");
-			break;
-			
-		case FONT_APPLE2GS:
-			strcpy(buf, "Apple IIgs");
-			break;
-			
-		case FONT_AQUARIUS:
-			strcpy(buf, "Aquarius");
-			break;
-			
-		case FONT_ATARI400:
-			strcpy(buf, "Atari 400");
-			break;
-			
-		case FONT_C64:
-			strcpy(buf, "C64");
-			break;
-			
-		case FONT_C64_HIRES:
-			strcpy(buf, "C64 HiRes");
-			break;
-			
-		case FONT_CGA:
-			strcpy(buf, "IBM CGA");
-			break;
-			
-		case FONT_COCO:
-			strcpy(buf, "COCO Mode I");
-			break;
-			
-		case FONT_COCO2:
-			strcpy(buf, "COCO Mode II");
-			break;
-			
-		case FONT_COUPE:
-			strcpy(buf, "Coupe");
-			break;
-			
-		case FONT_CPC:
-			strcpy(buf, "Amstrad CPC");
-			break;
-			
-		case FONT_FANTASY:
-			strcpy(buf, "Fantasy Letters");
-			break;
-			
-		case FONT_FDS_KANA:
-			strcpy(buf, "FDS Katakana");
-			break;
-			
-		case FONT_FDSLIKE:
-			strcpy(buf, "FDSesque");
-			break;
-			
-		case FONT_FDS_ROMAN:
-			strcpy(buf, "FDS Roman");
-			break;
-			
-		case FONT_FF:
-			strcpy(buf, "FF");
-			break;
-			
-		case FONT_FUTHARK:
-			strcpy(buf, "Elder Futhark");
-			break;
-			
-		case FONT_GAIA:
-			strcpy(buf, "Gaia");
-			break;
-			
-		case FONT_HIRA:
-			strcpy(buf, "Hira");
-			break;
-			
-		case FONT_JP:
-			strcpy(buf, "JP Unsorted");
-			break;
-			
-		case FONT_KONG:
-			strcpy(buf, "Kong");
-			break;
-			
-		case FONT_MANA:
-			strcpy(buf, "Mana");
-			break;
-			
-		case FONT_MARIOLAND:
-			strcpy(buf, "Mario");
-			break;
-			
-		case FONT_MOT:
-			strcpy(buf, "Mot CPU");
-			break;
-			
-		case FONT_MSX0:
-			strcpy(buf, "MSX Mode 0");
-			break;
-			
-		case FONT_MSX1:
-			strcpy(buf, "MSX Mode 1");
-			break;
-			
-		case FONT_PET:
-			strcpy(buf, "PET");
-			break;
-			
-		case FONT_PSTART:
-			strcpy(buf, "Homebrew");
-			break;
-			
-		case FONT_SATURN:
-			strcpy(buf, "Mr. Saturn");
-			break;
-			
-		case FONT_SCIFI:
-			strcpy(buf, "Sci-Fi");
-			break;
-			
-		case FONT_SHERWOOD:
-			strcpy(buf, "Sherwood");
-			break;
-			
-		case FONT_SINQL:
-			strcpy(buf, "Sinclair QL");
-			break;
-			
-		case FONT_SPECTRUM:
-			strcpy(buf, "Spectrum");
-			break;
-			
-		case FONT_SPECTRUM_LG:
-			strcpy(buf, "Spectrum Large");
-			break;
-			
-		case FONT_TI99:
-			strcpy(buf, "TI99");
-			break;
-			
-		case FONT_TRS:
-			strcpy(buf, "TRS");
-			break;
-			
-		case FONT_Z2:
-			strcpy(buf, "Zelda 2");
-			break;
-			
-		case FONT_LISA:
-			strcpy(buf, "Lisa");
-			break;
-	}
-} //end
-
-void flashScreen(Color color, bool subscreen) //start
+void flashScreen(Color color, bool subscreen) //start 
 {
 	Screen->Rectangle(7, 0, subscreen?-56:0, 256, 176, color, 1, 0, 0, 0, true, OP_OPAQUE);
 }//end
-void flashScreenTrans(Color color, bool subscreen) //start
+void flashScreenTrans(Color color, bool subscreen) //start 
 {
 	Screen->Rectangle(7, 0, subscreen?-56:0, 256, 176, color, 1, 0, 0, 0, true, OP_TRANS);
 }//end
@@ -659,4 +372,16 @@ int getKeyPress()
 }
 //end
 
+int getBit(int flagSet, int bit) //start
+{
+	#option BINARY_32BIT on
+	
+	return flagSet & bit;
+} //end
 
+int setBit(int flagSet, int bit) //start
+{
+	#option BINARY_32BIT on
+	
+	return flagSet | bit;
+} //end

@@ -138,5 +138,5 @@ ffc script FFCShop
 	void drawPriceString(int x, int y, int priceStr)
 	{
 		Screen->DrawString(LAYER_PRICETEXT, x, y, FONT_PRICEDISPLAY, COLOR_PRICETEXT, -1, TF_CENTERED, priceStr, OP_OPAQUE);
-	}
+	}	
 }

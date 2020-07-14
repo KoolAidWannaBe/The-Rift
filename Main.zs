@@ -4,18 +4,19 @@ typedef const int	DEFINE;
 typedef const int 	CONFIG;
 typedef const bool 	CONFIGB;
 
-#include "std.zh"
-#include "GlobalScripts.zs"
-#include "misc.zs"
-#include "VenrobMisc.zh"
-#include "Weapons.zs"
+#include "Crafting.zs"
 #include "Crossbow.zs"
 #include "FFCShop.zs"
-#include "TangoHandler.zh"
-#include "customTango.zh"
+#include "GlobalScripts.zs"
+#include "Minigame.zs"
 #include "NPC-Cutscene.zs"
-#include "RiftMovement.zs"
 #include "RiftDrawing.zs"
-#include "Crafting.zs"
+#include "RiftMovement.zs"
+#include "TangoHandler.zh"
+#include "VenrobMisc.zh"
+#include "Weapons.zs"
+#include "customTango.zh"
+#include "misc.zs"
+#include "std.zh"
 
 always using namespace Venrob;

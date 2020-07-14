@@ -23,15 +23,16 @@ enum Color //start
 	C_WHITE		=  0x01,
 	C_BLACK		=  0x0F,
 	
-	C_LGRAY		=  0x0D,
-	C_DGRAY 	=  0x0E,
-	C_RED		=  0x52,
-	C_DRED		=  0x53,
-	C_YELLOW	=  0x08,
-	C_GREEN		=  0x82,
-	C_DGREEN	=  0x83,
-	C_CYAN 		=  0xAC,
-	C_LILLAC	=  0x75
+	C_LGRAY		=  0x5C,
+	C_GRAY		=  0x5D,
+	C_DGRAY 	=  0x5E,
+	C_RED		=  0x6D,
+	C_DRED		=  0x6E,
+	C_YELLOW	=  0x1A,
+	C_GREEN		=  0x13,
+	C_DGREEN	=  0x15,
+	C_CYAN 		=  0x07,
+	C_LILLAC	=  0x96
 	
 };
 typedef const Color COLOR;
@@ -44,8 +45,14 @@ enum
 {
 	GV_ANPC,
 	GV_TANGO_SLOT_MAIN,
-	GV_TANGO_SLOT_NPC
-	//GV_
+	GV_TANGO_SLOT_NPC,
+	GV_FLAGS1
+};
+
+enum
+{
+	GF_TRACK_CLEARED,
+	GF_TRACK_HEARTPIECE
 };
 
 //end
@@ -58,6 +65,7 @@ global script Active
 	void run()
 	{
 		if(DEBUG) debug();
+		ClearDebugTiles();
 		OptMenu::init_menu_bitmap();
 		TangoInit();
 		while(true)
@@ -73,6 +81,14 @@ global script Active
 	{
 		Game->Cheat = 4;
 		//Crafting::loadRecipes(Crafting::CS_NONE);
+	}
+	void ClearDebugTiles()
+	{
+		int arr[] = {240};
+		for(int q = SizeOfArray(arr) - 1; q >= 0; --q)
+		{
+			CopyTile(TILE_INVIS, arr[q]);
+		}
 	}
 }
 
@@ -301,7 +317,7 @@ namespace OptMenu //start
 			{
 				Waitdraw();
 				if(cooldown > 0) --cooldown;
-				inputTimer = ++inputTimer%INPUT_DELAY;
+				inputTimer = ++inputTimer % INPUT_DELAY;
 				loadMenuTempBitmap(menu);
 				bool confirm = Input->Press[CB_A] || keyCheck(KEY_ENTER) || keyCheck(KEY_ENTER_PAD);
 				bool deny = Input->Press[CB_B] || keyCheck(KEY_BACKSPACE);

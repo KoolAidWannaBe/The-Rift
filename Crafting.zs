@@ -2,7 +2,7 @@
 namespace Crafting
 {
 	#option BINARY_32BIT on
-	
+
 	DEFINE REC_ARR_SIZE = 32;
 	CONFIG COUNTER_FONT = FONT_Z3SMALL;
 	CONFIG TILE_RARROW = 52260;
@@ -33,7 +33,7 @@ namespace Crafting
 				return CS_NONE;
 		}
 	}
-	
+
 	void loadRecipe(untyped arr, Recipe r)
 	{
 		switch(r)
@@ -47,7 +47,7 @@ namespace Crafting
 		}
 		arr[0] = getStation(r);
 	}
-	
+
 	bool canCraft(Recipe r, CraftingStation s)
 	{
 		if(s == CS_NONE) return true;
@@ -71,7 +71,7 @@ namespace Crafting
 		}
 		return true;
 	}
-	
+
 	void craft(Recipe r)
 	{
 		untyped arr[REC_ARR_SIZE];
@@ -119,7 +119,7 @@ namespace Crafting
 			{
 				++c;
 				craftable[q] = true;
-			}			
+			}
 		}
 		craftable[0] = c;
 		bitmap b = Game->CreateBitmap(188, 16 * c);
@@ -137,7 +137,7 @@ namespace Crafting
 					b->FastTile(0, 16 * index, 16 * rIndex, getCounterTile(-arr[p]), 0, OP_OPAQUE);
 					char32 buf[11];
 					itoa(buf, arr[++p]);
-					b->DrawString(0, 16 * ++index - 1, 16 * rIndex + (16 - Text->FontHeight(COUNTER_FONT)), 
+					b->DrawString(0, 16 * ++index - 1, 16 * rIndex + (16 - Text->FontHeight(COUNTER_FONT)),
 					              COUNTER_FONT, C_WHITE, C_TRANSBG, TF_RIGHT, buf, OP_OPAQUE);
 				}
 				else
@@ -153,7 +153,7 @@ namespace Crafting
 		b->Write(7, "recipe.png", true);
 		return b;
 	}
-	
+
 	int getCounterTile(int counter)
 	{
 		switch(counter)
@@ -164,7 +164,7 @@ namespace Crafting
 				return TILE_INVIS;
 		}
 	}
-	
+
 	int getOutputTile(Recipe r)
 	{
 		switch(r)
@@ -177,7 +177,7 @@ namespace Crafting
 				return TILE_INVIS;
 		}
 	}
-	
+
 	int getOutputCSet(Recipe r)
 	{
 		switch(r)
@@ -190,11 +190,8 @@ namespace Crafting
 				return 0;
 		}
 	}
-	
+
 }
-
-
-
 
 
 

@@ -84,7 +84,7 @@ global script Active
 	}
 	void ClearDebugTiles()
 	{
-		int arr[] = {240};
+		int arr[] = {240, 241};
 		for(int q = SizeOfArray(arr) - 1; q >= 0; --q)
 		{
 			CopyTile(TILE_INVIS, arr[q]);

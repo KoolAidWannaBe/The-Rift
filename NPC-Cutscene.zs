@@ -163,8 +163,9 @@ ffc script NPC
 					person->Flags[FFCF_CARRYOVER] = true;
 					ffc cart = Screen->LoadFFC(2);
 					cart->Flags[FFCF_LENSVIS] = true;
-					int score = MinecartGame::mineCartGame(person, 29358, 2); //play the game
+					int score = MinecartGame::mineCartGame(person, 29358, 2, 1, 8, 8); //play the game
 					person->Flags[FFCF_CARRYOVER] = false;
+					Waitframe();
 					switch(score)
 					{
 						case 15...24:

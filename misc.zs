@@ -149,6 +149,58 @@ void flashScreenTrans(Color color, bool subscreen) //start
 	Screen->Rectangle(7, 0, subscreen?-56:0, 256, 176, color, 1, 0, 0, 0, true, OP_TRANS);
 }//end
 
+ffc script fakeShutters //start
+{
+	void run(int dir, int rad, int combo)
+	{
+		if(Distance(Hero->X, Hero->Y, this->X, this->Y) <= rad)
+		{
+			bool r = true;
+			Hero->Dir = dir;
+			while(r)
+			{
+				switch(dir)
+				{
+					case DIR_UP:
+						Hero->Y -= Hero->Step / 100;
+						if(Hero->Y <= 176 - 32)
+						{
+							Hero->Y = 176 - 32;
+							r = false;
+						}
+						break;
+					case DIR_DOWN:
+						Hero->Y += Hero->Step / 100;
+						if(Hero->Y >= 32)
+						{
+							Hero->Y = 32;
+							r = false;
+						}
+						break;
+					case DIR_LEFT:
+						Hero->X -= Hero->Step / 100;
+						if(Hero->X <= 256 - 32)
+						{
+							Hero->X = 256 - 32;
+							r = false;
+						}
+						break;
+					case DIR_RIGHT:
+						Hero->X += Hero->Step / 100;
+						if(Hero->X >= 32)
+						{
+							Hero->X = 32;
+							r = false;
+						}
+						break;
+				}
+				TotalNoAction();
+				Waitframe();
+			}
+		}
+		
+	}
+} //end
 
 bool AgainstPosition(int x, int y) //start
 {

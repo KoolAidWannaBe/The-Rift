@@ -18,5 +18,7 @@ typedef const bool 	CONFIGB;
 #include "customTango.zh"
 #include "misc.zs"
 #include "std.zh"
+#include "Items.zs"
+#include "RiftSubscreen.zs"
 
 always using namespace Venrob;

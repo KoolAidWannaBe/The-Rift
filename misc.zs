@@ -202,6 +202,28 @@ ffc script fakeShutters //start
 	}
 } //end
 
+void fadeOut(int speed) //start
+{
+	for(int q = 0; q > -63; q -= speed)
+	{
+		Graphics->ClearTint();
+		Graphics->Tint(q, q, q);
+		WaitTotalNoAction();
+	}
+	
+} //end
+
+void fadeIn(int speed) //start
+{
+	for(int q = -63; q < 0; q += speed)
+	{
+		Graphics->ClearTint();
+		Graphics->Tint(q, q, q);
+		WaitTotalNoAction();
+	}
+	Graphics->ClearTint();
+} //end
+
 bool AgainstPosition(int x, int y) //start
 {
 	return AgainstPosition(x, y, Hero->BigHitbox, true);
@@ -437,3 +459,29 @@ int setBit(int flagSet, int bit) //start
 	
 	return flagSet | bit;
 } //end
+
+
+/*
+int itemIDs[] = {IC_SWORD,    IC_BRANG,       IC_BOMB,       IC_ARROW,
+				 IC_CANDLE,   IC_WHISTLE,     IC_POTION,     IC_BAIT,
+                 IC_SBOMB,    IC_HOOKSHOT,    IC_HAMMER,     IC_WAND,
+				 IC_LENS,     256,            IC_CBYRNA,     IC_CUSTOM8,
+				 IC_DINSFIRE, IC_FARORESWIND, IC_NAYRUSLOVE, IC_CUSTOM4,
+				 IC_CUSTOM1,  260,            261,           262};
+                  
+int ROW1 = 42, ROW2 = 58, ROW3 = 74, ROW4 = 90, ROW5 = 106, ROW6 = 122;
+
+int dist = 1;
+
+int itemLocs[] = {ROW1, ROW1 + 1, ROW1 + 2 * dist, ROW1 + 3 * dist,  ROW1 + 4 * dist, 
+                  ROW2, ROW2 + 1, ROW2 + 2 * dist, ROW2 + 3 * dist,  ROW2 + 4 * dist,
+                  ROW3, ROW3 + 1, ROW3 + 2 * dist, ROW3 + 3 * dist,  ROW3 + 4 * dist,
+                  ROW4, ROW4 + 1, ROW4 + 2 * dist, ROW4 + 3 * dist,  ROW4 + 4 * dist,
+                  ROW5, ROW5 + 1, ROW5 + 2 * dist, ROW5 + 3 * dist,  ROW5 + 4 * dist,
+                  ROW6, ROW6 + 1, ROW6 + 2 * dist, ROW6 + 3 * dist,  ROW6 + 4 * dist};
+
+*/
+
+
+
+

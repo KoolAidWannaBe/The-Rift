@@ -1,4 +1,5 @@
 
+/*
 lweapon script SineWave
 {
 	void run(int amp, int freq)
@@ -24,6 +25,17 @@ lweapon script SineWave
 		}
 	}
 }
+*/
+// look at totem summon and totem // I get this now, I'll fix it tomorrow
+itemdata script SineWave
+{
+	void run(int type, int amp, int freq)
+	{
+		fireSineShot(this, type, Hero->X, Hero->Y, Hero->Z, DirRad(Hero->Dir), amp, freq);
+		//void fireSineShot(itemdata parent, int type, int x, int y, int z, int angle, int amp, int freq)
+		Waitframe();
+	}
+}
 
 
 itemdata script MultiShot
@@ -37,7 +49,7 @@ itemdata script MultiShot
 
 itemdata script TotemSummon
 {
-	void run(int totemMax, int offset, int count, int arc, int type, int lifeTime, int firerate, int step)
+	void run(int type, int count, int arc, int step, int lifeTime, int firerate, int totemMax, int offset)
 	{
 		int index;
 		int totemScript = Game->GetLWeaponScript("Totem");
@@ -73,7 +85,7 @@ itemdata script TotemSummon
 
 lweapon script Totem
 {
-	void run(itemdata parent, int count, int arc, int type, int lifeTime, int firerate, int step)
+	void run(itemdata parent, int type, int count, int arc, int step, int lifeTime, int firerate)
 	{
 		firerate = Floor(firerate ? firerate * 60 : 60);
 		lifeTime *= 60;
@@ -82,7 +94,8 @@ lweapon script Totem
 		{
 			unless(++clk % firerate)
 			{
-				fireMultiShot(parent, count, arc, type, this->X, this->Y, this->Z, RadtoDeg(this->Angle), step);
+				//fireMultiShot(parent, count, arc, type, this->X, this->Y, this->Z, RadtoDeg(this->Angle), step);
+				fireMultiShot(parent, type, this->X, this->Y, this->Z, count, arc, RadtoDeg(this->Angle), step);
 			}
 			Waitframe();
 			unless(--lifeTime > 0) 
@@ -98,7 +111,8 @@ lweapon script Totem
 	}
 }
  
-void fireMultiShot(itemdata parent, int count, int arc, int type, int x, int y, int z, int angle, int step)
+void fireMultiShot(itemdata parent, int type, int x, int y, int z, int count, int arc, int angle, int step)
+//void fireMultiShot(itemdata parent, int count, int arc, int type, int x, int y, int z, int angle, int step)
 {
 	for(int q = 0; q < count; ++q)
 	{
@@ -108,6 +122,9 @@ void fireMultiShot(itemdata parent, int count, int arc, int type, int x, int y, 
 		weap->Z = z;
 		weap->Angular = true;
 		weap->Angle = DegtoRad(angle);
+		weap->Rotation = WrapDegrees(angle + 90);
+		weap->Step = step;
+		angle = WrapDegrees(angle + arc);
 		if(parent)
 		{
 			weap->Damage = parent->Power * 2;
@@ -120,14 +137,52 @@ void fireMultiShot(itemdata parent, int count, int arc, int type, int x, int y, 
 				weap->InitD[j] = parent->WeaponInitD[j];
 			}
 		}
-		weap->Rotation = WrapDegrees(angle + 90);
-		weap->Step = step;
-		angle = WrapDegrees(angle + arc);
 	}
 }
 
+void fireSineShot(itemdata parent, int type, int x, int y, int z, int angle, int amp, int freq)
+{
+	lweapon weap = Screen->CreateLWeapon(type);
+	weap->Angular = true;
+	weap->Angle = angle;
+	int clk;
+	int dist;
+	while(true)
+	{
+		clk += freq;
+		clk %= 360;
+		
+		x += RadianCos(weap->Angle) * weap->Step * .01;
+		y += RadianSin(weap->Angle) * weap->Step * .01;
+		
+		dist = Sin(clk) * amp;
+		
+		weap->X = x + VectorX(dist, RadtoDeg(weap->Angle) - 90);
+		weap->Y = y + VectorY(dist, RadtoDeg(weap->Angle) - 90);
+		Waitframe();
+	}
+}
+
+/*
+		//this->Angle = DirRad(this->Dir);
+		//this->Angular = true;
+		int x = this->X, y = this->Y;
+		int clk;
+		int dist;
+		while(true)
+		{
+			clk += freq;
+			clk %= 360;
+			
+			x += RadianCos(this->Angle) * this->Step * .01;
+			y += RadianSin(this->Angle) * this->Step * .01;
+			
+			dist = Sin(clk) * amp;
+			
+			this->X = x + VectorX(dist, RadtoDeg(this->Angle) - 90);
+			this->Y = y + VectorY(dist, RadtoDeg(this->Angle) - 90);
+			Waitframe();
 
 
-
-
+*/
 

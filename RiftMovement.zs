@@ -66,6 +66,26 @@ ffc script OvMove
 	}
 }
 
+ffc script SpiroMove
+{
+	void run(int a, int b, int v, int theta, int phi, int phiv)
+	{
+		int x = this->X;
+		int y = this->Y;
+		if(theta < 0) theta = Rand(180);
+		while(true)
+		{
+			phi += phiv;
+			WrapDegrees(phi);
+			theta += v;
+			WrapDegrees(theta);
+			this->X = x + a * Cos(theta) * Cos(phi) - b * Sin(theta) * Sin(phi);
+			this->Y = y + b * Sin(theta) * Cos(phi) + a * Cos(theta) * Sin(phi);
+			Waitframe();
+		}
+	}
+}
+
 ffc script CircOvMove
 {
 	void run(int a, int b, int v, int theta, int phi) 

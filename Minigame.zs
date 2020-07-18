@@ -6,13 +6,14 @@ namespace MinecartGame
 	CONFIG CF_TRACK = CF_SCRIPT1;
 	CONFIG CF_END = CF_SCRIPT2;
 	CONFIG OBJECT_LAYER = 1;
-	CONFIG END_DELAY = 60 * 5;
+	CONFIG END_DELAY = 60 * 1;
 	CONFIG COMBO_HEROCART = 30344;
 	CONFIG TILE_ARROW = 341;
 	CONFIG TILE_INVIS = ::TILE_INVIS;
 	CONFIG CSET_ARROW = 8;
 	CONFIG SPD_ARROW = 8;
 	CONFIG SPD_CART = 2;
+	CONFIG SPD_FADE = 1;
 	CONFIG SFX_CART = 0;
 	CONFIG SFX_CART_DELAY = 1;
 	CONFIG MAX_SHOTS = 2;
@@ -160,7 +161,7 @@ namespace MinecartGame
 			Waitframe();
 		}
 		int loop;
-		do
+		for(int f = END_DELAY; f > 0; --f)
 		{
 			loop = (loop + SPD_CART) % 32;
 			for(int q = 0; q < numscreens; ++q)
@@ -169,14 +170,26 @@ namespace MinecartGame
 			}
 			Screen->DrawCombo(7, Hero->X, Hero->Y - 16, COMBO_HEROCART + Hero->Dir, 1, 2, 6, -1, -1, 0, 0, 0, 0, 0, true, OP_OPAQUE);
 			unless(clk++ % SFX_CART_DELAY) Audio->PlaySound(SFX_CART);
-			TotalNoAction();
-			Waitframe();
+			WaitTotalNoAction();
 		}
-		until(Input->Press[CB_A] || Input->Press[CB_START]);
+		for(int f = 0; f > -63; f -= SPD_FADE)
+		{
+			loop = (loop + SPD_CART) % 32;
+			for(int q = 0; q < numscreens; ++q)
+			{
+				Screen->DrawScreen(7, map, screen + q, (q * 256) - (scroll + loop), 0, 0);
+			}
+			Screen->DrawCombo(7, Hero->X, Hero->Y - 16, COMBO_HEROCART + Hero->Dir, 1, 2, 6, -1, -1, 0, 0, 0, 0, 0, true, OP_OPAQUE);
+			unless(clk++ % SFX_CART_DELAY) Audio->PlaySound(SFX_CART);
+			Graphics->ClearTint();
+			Graphics->Tint(f, f, f);
+			WaitTotalNoAction();
+		}
 		Hero->WarpEx({WT_IWARP, returnDMap, returnScreen, ox, oy, WARPEFFECT_NONE, 0, 0, od});
-		Waitframe();
+		WaitTotalNoAction(10);
 		person->Flags[FFCF_LENSVIS] = false;
 		Hero->Invisible = false;
+		fadeIn(SPD_FADE);
 		b->Free();
 		return score;
 	} //end

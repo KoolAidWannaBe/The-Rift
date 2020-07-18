@@ -122,6 +122,66 @@ namespace Venrob
 	} //end
 
 	/**
+	* Adds the horizontal component of a direction
+	*/
+	int addX(int dir, int add) //start
+	{
+		switch(remX(dir))
+		{
+			case DIR_UP:
+				switch(add)
+				{
+					case DIR_RIGHT:
+						return DIR_RIGHTUP;
+					case DIR_LEFT:
+						return DIR_LEFTUP;
+				}
+				return DIR_UP;
+			case DIR_DOWN:
+				switch(add)
+				{
+					case DIR_RIGHT:
+						return DIR_RIGHTDOWN;
+					case DIR_LEFT:
+						return DIR_LEFTDOWN;
+				}
+				return DIR_DOWN;
+			default:
+				return add;
+		}
+	} //end
+
+	/**
+	* Adds the vertical component of a direction
+	*/
+	int addY(int dir, int add) //start
+	{
+		switch(remY(dir))
+		{
+			case DIR_LEFT:
+				switch(add)
+				{
+					case DIR_UP:
+						return DIR_LEFTUP;
+					case DIR_DOWN:
+						return DIR_LEFTDOWN;
+				}
+				return DIR_LEFT;
+			case DIR_RIGHT:
+				switch(add)
+				{
+					case DIR_UP:
+						return DIR_RIGHTUP;
+					case DIR_DOWN:
+						return DIR_RIGHTDOWN;
+				}
+				return DIR_RIGHT;
+			default:
+				return add;
+		}
+	} //end
+
+	/**
 	* Spin a dir clockwise 45°
 	*/
 	int SpinDir8(int dir) //start
@@ -579,7 +639,8 @@ namespace Venrob
 	//start Drawing Functions
 
 	//As the name of the function implies, this was stolen from Moosh.
-	void MooshDrawTile(int layer, int cx, int cy, int tile, int blockw, int blockh, int cset, int xscale, int yscale, int rx, int ry, int rangle, int flip, bool transparency, int opacity){
+	void MooshDrawTile(int layer, int cx, int cy, int tile, int blockw, int blockh, int cset, int xscale, int yscale, int rx, int ry, int rangle, int flip, bool transparency, int opacity) //start
+	{
 		int w = xscale;
 		if(xscale==-1)
 			w = blockw*16;
@@ -587,16 +648,16 @@ namespace Venrob
 		if(yscale==-1)
 			h = blockh*16;
 		Screen->DrawTile(layer, cx-w/2, cy-h/2, tile, blockw, blockh, cset, xscale, yscale, rx-w/2, ry-h/2, rangle, flip, transparency, opacity);
-	}
+	} //end
 	
 	/**
 	 * Colors the entire screen. bool subscrArea determines if the passive
 	 *     subscreen should be included.
 	 */
-	void ColorScreen(int layer, int color, bool subscrArea)
+	void ColorScreen(int layer, int color, bool subscrArea) //start
 	{
 		Screen->Rectangle(layer,0,subscrArea?-56:0,255,175,color,1,0,0,0,true,OP_OPAQUE);
-	}
+	} //end
 	
 	/**
 	 * This will work as DrawString, but, it can draw over multiple vertical lines.
@@ -605,8 +666,13 @@ namespace Venrob
 	 *	'verticalSpacing' is the extra space to include between lines.
 	 *	'MaxWidth' is the width at which text will be forced onto the next line.
 	 */
-	void DrawStrings(int layer, int x, int y, int font, int color, int background_color, int format, char32 ptr, int opacity, int verticalSpacing, int MaxWidth)
+	void DrawStrings(int layer, int x, int y, int font, int color, int background_color, int format, char32 ptr, int opacity, int verticalSpacing, int MaxWidth) //start
 	{
+		if(MaxWidth <= 0)
+		{
+			Screen->DrawString(layer, x, y, font, color, background_color, format, ptr, opacity);
+			return;
+		}
 		int cpyptr[2048];
 		strcpy(cpyptr,ptr);
 		int fontHeight = Text->FontHeight(font);
@@ -643,18 +709,89 @@ namespace Venrob
 				Screen->DrawString(layer, x, y, font, color, background_color, format, cpyptr, opacity);
 				return;
 			}
-			int buf[256];
-			memcpy(buf, 0, cpyptr, 0, pos); //Copy first string
-			Screen->DrawString(layer, x, y, font, color, background_color, format, buf, opacity);
+			if(pos && !(endpos == pos && pos <= 1))
+			{
+				int buf[256];
+				memcpy(buf, 0, cpyptr, 0, pos); //Copy first string
+				Screen->DrawString(layer, x, y, font, color, background_color, format, buf, opacity);
+			}
 			if(endpos==pos)
 			{
+				if(pos <= 1)
+				{
+					DrawStrings(layer, x, y, font, color, background_color, format, ptr, opacity, verticalSpacing, MaxWidth + 4);
+					return;
+				}
 				remnchr(cpyptr, 0, pos-1); //Shift back the string, save for 2 chars
 				cpyptr[0] = '-'; //Hyphenate when cutting mid-word
 			}
 			else remnchr(cpyptr, 0, pos+1); //Shift back the string, deleting what was already drawn
 			y+=fontHeight+verticalSpacing;
 		}
-	}
+	} //end
+	void DrawStrings(int layer, int x, int y, int font, int color, int background_color, int format, char32 ptr, int opacity, int shadow_type, int shadow_color, int verticalSpacing, int MaxWidth) //start
+	{
+		if(MaxWidth <= 0)
+		{
+			Screen->DrawString(layer, x, y, font, color, background_color, format, ptr, opacity, shadow_type, shadow_color);
+			return;
+		}
+		int cpyptr[2048];
+		strcpy(cpyptr,ptr);
+		int fontHeight = Text->FontHeight(font);
+		while(true)
+		{
+			int endpos = -1;
+			int width = 0;
+			int lastEmptyPos = -1;
+			int length = strlen(cpyptr);
+			for(int q = 0; cpyptr[q] != 0; ++q)
+			{
+				char32 chr = cpyptr[q];
+				if(chr==CHAR_SPACE) lastEmptyPos = q;
+				if(chr==CHAR_NEWLINE)
+				{
+					lastEmptyPos = q;
+					break;
+				}
+				width += Text->CharWidth(chr, font);
+				if(width>=MaxWidth)
+				{
+					unless(lastEmptyPos==q)
+						endpos = q;
+					break;
+				}
+				if(cpyptr[q+1]==0) lastEmptyPos = -1;
+			}
+			int pos;
+			if(endpos==-1)pos=lastEmptyPos;
+			else if(lastEmptyPos==-1)pos=endpos;
+			else pos = Min(lastEmptyPos,endpos);
+			if(pos==-1) //No newline
+			{
+				Screen->DrawString(layer, x, y, font, color, background_color, format, cpyptr, opacity, shadow_type, shadow_color);
+				return;
+			}
+			if(pos && !(endpos == pos && pos <= 1))
+			{
+				int buf[256];
+				memcpy(buf, 0, cpyptr, 0, pos); //Copy first string
+				Screen->DrawString(layer, x, y, font, color, background_color, format, buf, opacity, shadow_type, shadow_color);
+			}
+			if(endpos==pos)
+			{
+				if(pos <= 1)
+				{
+					DrawStrings(layer, x, y, font, color, background_color, format, ptr, opacity, shadow_type, shadow_color, verticalSpacing, MaxWidth + 4);
+					return;
+				}
+				remnchr(cpyptr, 0, pos-1); //Shift back the string, save for 2 chars
+				cpyptr[0] = '-'; //Hyphenate when cutting mid-word
+			}
+			else remnchr(cpyptr, 0, pos+1); //Shift back the string, deleting what was already drawn
+			y+=fontHeight+verticalSpacing;
+		}
+	} //end
 
 	
 	/**
@@ -665,8 +802,13 @@ namespace Venrob
 	 *	'verticalSpacing' is the extra space to include between lines.
 	 *	'MaxWidth' is the width at which text will be forced onto the next line.
 	 */
-	void DrawStringsBitmap(bitmap b, int layer, int x, int y, int font, int color, int background_color, int format, char32 ptr, int opacity, int verticalSpacing, int MaxWidth)
+	void DrawStringsBitmap(bitmap b, int layer, int x, int y, int font, int color, int background_color, int format, char32 ptr, int opacity, int verticalSpacing, int MaxWidth) //start
 	{
+		if(MaxWidth <= 0)
+		{
+			b->DrawString(layer, x, y, font, color, background_color, format, ptr, opacity);
+			return;
+		}
 		int cpyptr[2048];
 		strcpy(cpyptr,ptr);
 		int fontHeight = Text->FontHeight(font);
@@ -703,26 +845,33 @@ namespace Venrob
 				b->DrawString(layer, x, y, font, color, background_color, format, cpyptr, opacity);
 				return;
 			}
-			int buf[256];
-			memcpy(buf, 0, cpyptr, 0, pos); //Copy first string
-			b->DrawString(layer, x, y, font, color, background_color, format, buf, opacity);
+			if(pos && !(endpos == pos && pos <= 1))
+			{
+				int buf[256];
+				memcpy(buf, 0, cpyptr, 0, pos); //Copy first string
+				b->DrawString(layer, x, y, font, color, background_color, format, buf, opacity);
+			}
 			if(endpos==pos)
 			{
+				if(pos <= 1)
+				{
+					DrawStringsBitmap(b, layer, x, y, font, color, background_color, format, ptr, opacity, verticalSpacing, MaxWidth + 4);
+					return;
+				}
 				remnchr(cpyptr, 0, pos-1); //Shift back the string, save for 2 chars
 				cpyptr[0] = '-'; //Hyphenate when cutting mid-word
 			}
 			else remnchr(cpyptr, 0, pos+1); //Shift back the string, deleting what was already drawn
 			y+=fontHeight+verticalSpacing;
 		}
-	}
-	
-	/**
-	 * Same as DrawStrings, but, does not draw anything.
-	 * Returns the number of lines that DrawStrings would use.
-	 */
-	int DrawStringsCount(int font, char32 ptr, int MaxWidth)
+	} //end
+	void DrawStringsBitmap(bitmap b, int layer, int x, int y, int font, int color, int background_color, int format, char32 ptr, int opacity, int shadow_type, int shadow_color, int verticalSpacing, int MaxWidth) //start
 	{
-		int count = 1;
+		if(MaxWidth <= 0)
+		{
+			b->DrawString(layer, x, y, font, color, background_color, format, ptr, opacity, shadow_type, shadow_color);
+			return;
+		}
 		int cpyptr[2048];
 		strcpy(cpyptr,ptr);
 		int fontHeight = Text->FontHeight(font);
@@ -756,17 +905,152 @@ namespace Venrob
 			else pos = Min(lastEmptyPos,endpos);
 			if(pos==-1) //No newline
 			{
+				b->DrawString(layer, x, y, font, color, background_color, format, cpyptr, opacity, shadow_type, shadow_color);
+				return;
+			}
+			if(pos && !(endpos == pos && pos <= 1))
+			{
+				int buf[256];
+				memcpy(buf, 0, cpyptr, 0, pos); //Copy first string
+				b->DrawString(layer, x, y, font, color, background_color, format, buf, opacity, shadow_type, shadow_color);
+			}
+			if(endpos==pos)
+			{
+				if(pos <= 1)
+				{
+					DrawStringsBitmap(b, layer, x, y, font, color, background_color, format, ptr, opacity, shadow_type, shadow_color, verticalSpacing, MaxWidth + 4);
+					return;
+				}
+				remnchr(cpyptr, 0, pos-1); //Shift back the string, save for 2 chars
+				cpyptr[0] = '-'; //Hyphenate when cutting mid-word
+			}
+			else remnchr(cpyptr, 0, pos+1); //Shift back the string, deleting what was already drawn
+			y+=fontHeight+verticalSpacing;
+		}
+	} //end
+	
+	/**
+	 * Same as DrawStrings, but, does not draw anything.
+	 * Returns the number of lines that DrawStrings would use.
+	 */
+	int DrawStringsCount(int font, char32 ptr, int MaxWidth) //start
+	{
+		if(MaxWidth <= 0) return 1;
+		int count = 1;
+		int cpyptr[2048];
+		strcpy(cpyptr,ptr);
+		int fontHeight = Text->FontHeight(font);
+		while(true)
+		{
+			int endpos = -1;
+			int width = 0;
+			int lastEmptyPos = -1;
+			int length = strlen(cpyptr);
+			for(int q = 0; cpyptr[q] != 0; ++q)
+			{
+				char32 chr = cpyptr[q];
+				if(chr==CHAR_SPACE) lastEmptyPos = q;
+				if(chr==CHAR_NEWLINE)
+				{
+					lastEmptyPos = q;
+					break;
+				}
+				width += Text->CharWidth(chr, font);
+				if(width>=MaxWidth)
+				{
+					unless(lastEmptyPos==q)
+						endpos = q;
+					break;
+				}
+				if(cpyptr[q+1]==0) lastEmptyPos = -1;
+			}
+			int pos;
+			if(endpos==-1)pos=lastEmptyPos;
+			else if(lastEmptyPos==-1)pos=endpos;
+			else pos = Min(lastEmptyPos,endpos);
+			if(pos<0) //No newline
+			{
 				return count;
 			}
 			if(endpos==pos)
 			{
+				if(pos <= 1)
+				{
+					return DrawStringsCount(font, ptr, MaxWidth + 4);
+				}
 				remnchr(cpyptr, 0, pos-1); //Shift back the string, save for 2 chars
 				cpyptr[0] = '-'; //Hyphenate when cutting mid-word
 			}
 			else remnchr(cpyptr, 0, pos+1); //Shift back the string, deleting what was already drawn
 			++count;
 		}
-	}
+	} //end
+	/**
+	 * Same as DrawStrings, but, does not draw anything.
+	 * Returns the width that DrawStrings would hit, at max.
+	 */
+	int DrawStringsWid(int font, char32 ptr, int MaxWidth) //start
+	{
+		if(MaxWidth <= 0) return 1;
+		int runningWid = 0;
+		int cpyptr[2048];
+		strcpy(cpyptr,ptr);
+		int fontHeight = Text->FontHeight(font);
+		while(true)
+		{
+			int endpos = -1;
+			int width = 0;
+			int lastEmptyPos = -1;
+			int length = strlen(cpyptr);
+			for(int q = 0; cpyptr[q] != 0; ++q)
+			{
+				char32 chr = cpyptr[q];
+				if(chr==CHAR_SPACE) lastEmptyPos = q;
+				if(chr==CHAR_NEWLINE)
+				{
+					lastEmptyPos = q;
+					break;
+				}
+				width += Text->CharWidth(chr, font);
+				if(width>=MaxWidth)
+				{
+					unless(lastEmptyPos==q)
+						endpos = q;
+					break;
+				}
+				if(cpyptr[q+1]==0) lastEmptyPos = -1;
+			}
+			int pos;
+			if(endpos==-1)pos=lastEmptyPos;
+			else if(lastEmptyPos==-1)pos=endpos;
+			else pos = Min(lastEmptyPos,endpos);
+			if(pos<0) //No newline
+			{
+				int w = Text->StringWidth(cpyptr, font);
+				if(w > runningWid)
+					return w;
+				return runningWid;
+			}
+			if(pos && !(endpos == pos && pos <= 1))
+			{
+				int buf[256];
+				memcpy(buf, 0, cpyptr, 0, pos); //Copy first string
+				int w = Text->StringWidth(buf, font);
+				if(w > runningWid)
+					runningWid = w;
+			}
+			if(endpos==pos)
+			{
+				if(pos <= 1)
+				{
+					return DrawStringsWid(font, ptr, MaxWidth + 4);
+				}
+				remnchr(cpyptr, 0, pos-1); //Shift back the string, save for 2 chars
+				cpyptr[0] = '-'; //Hyphenate when cutting mid-word
+			}
+			else remnchr(cpyptr, 0, pos+1); //Shift back the string, deleting what was already drawn
+		}
+	} //end
 	//end Drawing Functions
 
 	void getFontName(char32 buf, int font) //start
